@@ -9,5 +9,5 @@ I'm Jack Chan (K.C.)
 - 💬 Ask me about some easier way start your web and make some lazy way to complete operations task, like PHP/MySQL and bash shell.
 - 📫 How to reach me: You can find me on [Twitter](https://twitter.com/chkc12) if you'd like to connect.
 - 😄 Pronouns: He/Him
-- ⚡ Fun fact: Running two non profit project for automatically generate timetable for Universities/Academies in Hong Kong -- [MyTAG](https://mytag.hk) & Hong Kong university course selection tool according scores of Diploma of Secondary Education Examination -- [MyDSE](mydse.hk)
+- ⚡ Fun fact: Running two non profit project for automatically generate timetable for Universities/Academies in Hong Kong -- [MyTAG](https://mytag.hk) & Hong Kong university course selection tool according scores of Diploma of Secondary Education Examination -- [MyDSE](http://mydse.hk)
 I love to hiking and cycling even under travelling other countries; I also enjoy to translate project to Traditional and Simplified Chinese to global Chinese user. 
