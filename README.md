@@ -15,6 +15,6 @@ I'm Jack Chan (K.C.)
 - 😄 Pronouns: He/Him
 
 - ⚡ Fun fact: Running two non profit project for automatically generate timetable for Universities/Academies in Hong Kong -- [MyTAG](https://mytag.hk) & Hong Kong university course selection tool according scores of Diploma of Secondary Education Examination -- [MyDSE](http://mydse.hk)
-I love to hiking and cycling even under travelling other countries; I also enjoy to translate project to Traditional and Simplified Chinese to global Chinese user. 
+
 
 I currently migrating [my blog](https://ckc.github.io/) to Github page
