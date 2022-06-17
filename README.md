@@ -11,10 +11,12 @@ I'm Jack Chan (K.C.)
 - 🤔 I'm looking for help with front-end beginner kick starting like Node, Angular/React and Angular/material design layout how to work together. (In the past, I usually used classic way like Bootstrap & Jquery)
 
 - 💬 Ask me about some easier way start your web and make some lazy way to complete operations tasks, like Tampermonkey, PHP/MySQL and bash shell.
-- 📫 How to reach me: You can find me on [Twitter](https://twitter.com/chkc12) if you'd like to connect.
+- 📫 How to reach me: You can find me on [LinkedIn](https://www.linkedin.com/in/imckc) if you'd like to connect.
 - 😄 Pronouns: He/Him
 
-- ⚡ Fun fact: Running two non profit project for automatically generate timetable for Universities/Academies in Hong Kong -- [MyTAG](https://mytag.hk) & Hong Kong university course selection tool according scores of Diploma of Secondary Education Examination -- [MyDSE](http://mydse.hk)
+- ⚡ Fun fact: Running two non profit side-project:
+- - automatically generate timetable for Universities/Academies in Hong Kong -- [MyTAG](https://mytag.hk) 
+- - Hong Kong university course selection tool according scores of Diploma of Secondary Education Examination -- [MyDSE](http://mydse.hk)
 
 
-I currently migrating [my blog](https://ckc.github.io/) to Github page
+I currently migrating [my blog](https://blog.ckc.im/) to Github page
