@@ -3,7 +3,7 @@
 
 I'm Jack Chan (K.C.)
 
-- 🔭 I’m currently working on AWS Hong Kong near four years; Learning lots of infrasturcture automation logic like self-service network troubleshooting thru web panel; And network abstraction, auch as physical network to network virtualization (netflow between bare metal to hypervisor).... Spine-Leaf Cloud network structure .... etc.
+- 🔭 I’m currently working on @digitalocean and I worked for Microsoft under contract and I worked AWS Hong Kong near four years; Learning lots of infrasturcture automation logic like self-service network troubleshooting thru web panel; And network abstraction, auch as physical network to network virtualization (netflow between bare metal to hypervisor).... Spine-Leaf Cloud network structure .... etc.
 
 - 🌱 I'm currently learning to adopt serverless and microservices under Python-Flask and NodeJS; 
 - - 👯 I’m looking to collaborate on cross functional roles like network engineer and developer integrate some toolkit or and web dashboard to make data center run more efficiency
