@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TTC Arrivals — Mill St &amp; Parliament St</title>
+<style>
+  :root { color-scheme: light; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background:#f4f4f5; color:#1a1a1a; padding:20px;
+  }
+  .board {
+    max-width:1080px; margin:0 auto; border-radius:18px; overflow:hidden;
+    box-shadow:0 10px 34px rgba(0,0,0,.25); background:#111;
+  }
+  /* ── Top status bar (picture 1) ─────────────────────────── */
+  .topbar {
+    background:#2b2b2d; color:#fff; display:flex; justify-content:space-between; align-items:stretch;
+    font-size:13px;
+  }
+  .topbar .tab {
+    background:#3a3a3c; padding:10px 22px 10px 18px; font-weight:800; letter-spacing:.12em;
+    display:flex; align-items:center; gap:9px; border-radius:0 0 14px 0;
+  }
+  .topbar .tab svg { width:17px; height:17px; fill:#fff; }
+  .topbar .meta { display:flex; align-items:center; gap:22px; padding:10px 20px; font-weight:700; letter-spacing:.04em; color:#e8e8e8; }
+  .topbar .meta .clockIcon { opacity:.85; margin-right:6px; }
+  /* ── Pink banner: next TWO buses, two columns ───────────── */
+  .hdr {
+    background:#fcdfe0; display:grid; grid-template-columns:1fr 1fr; gap:0 34px;
+    padding:20px 26px 18px;
+  }
+  .feat { min-width:0; display:flex; justify-content:space-between; align-items:center; gap:16px; }
+  .feat + .feat { border-left:1.5px solid #f3bfc3; padding-left:30px; }
+  .feat .label { color:#d0021b; font-weight:800; letter-spacing:.06em; font-size:12.5px; }
+  .feat .pill {
+    display:inline-block; background:#d0021b; color:#fff; border-radius:999px;
+    font-size:11.5px; font-weight:800; letter-spacing:.05em; padding:2px 11px; margin-left:9px; vertical-align:1px;
+  }
+  .feat .pill.night { background:#3b3ba0; }
+  .feat .pill.express { background:#2e7d32; }
+  .titleline { display:flex; align-items:center; gap:11px; margin-top:6px; }
+  .bigdot {
+    width:15px; height:15px; border-radius:50%; background:#fff; border:4px solid #1a1a1a; flex-shrink:0; position:relative;
+  }
+  .bigdot::after { content:""; position:absolute; right:-9px; top:50%; transform:translateY(-50%);
+    border:5px solid transparent; border-left-color:#1a1a1a; }
+  .feat h1 { font-size:27px; font-weight:600; color:#1a1a1a; line-height:1.12; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .bigbadge {
+    background:#d0021b; color:#fff; font-weight:800; font-size:24px; line-height:1;
+    border-radius:10px; padding:6px 12px; flex-shrink:0;
+  }
+  .bigbadge.night { background:#3b3ba0; }
+  .bigbadge.express { background:#2e7d32; }
+  .feat .sub { color:#7a4a4e; font-size:12.5px; margin-top:8px; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+  .chip {
+    color:#fff; font-weight:800; font-size:12px; border-radius:6px; padding:2px 8px; text-align:center; background:#d0021b;
+  }
+  .chip.access { background:#0a84ff; font-size:12.5px; }
+  /* transfer chips */
+  .xfer { display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:12px; }
+  .hdr .xfer { margin-top:7px; color:#7a4a4e; }
+  .list .xfer { color:#8e8e93; width:100%; padding-left:2px; }
+  .xfer .xlabel { font-weight:800; letter-spacing:.05em; font-size:10.5px; opacity:.85; }
+  .xchip { display:inline-block; border-radius:5px; font-weight:800; font-size:11px; padding:1.5px 7px; line-height:1.5; }
+  .redbox {
+    background:#d0021b; color:#fff; border-radius:12px; text-align:center;
+    padding:11px 20px; box-shadow:0 3px 10px rgba(208,2,27,.35); flex-shrink:0;
+  }
+  .redbox .n { font-size:28px; font-weight:800; line-height:1; }
+  .redbox .u { font-size:11px; font-weight:800; letter-spacing:.14em; margin-top:3px; }
+  /* ── Black list: single column (rest of the buses) ──────── */
+  .list { padding:20px 26px 10px; background:#161616; }
+  .list h2 { color:#fff; font-size:13px; font-weight:800; letter-spacing:.08em; margin-bottom:12px; }
+  .row { display:grid; grid-template-columns:58px 26px 1fr; align-items:center; padding:8px 0; position:relative; }
+  .row .min { color:#bdbdbd; font-size:13.5px; font-weight:600; text-align:right; padding-right:12px; white-space:nowrap; }
+  .row .min.now { color:#4cd964; }
+  .dotcol { display:flex; justify-content:center; position:relative; height:100%; }
+  .dot { width:12px; height:12px; border-radius:50%; background:#8e8e93; border:3px solid #d9d9d9; z-index:1; align-self:center; }
+  .line { position:absolute; left:50%; transform:translateX(-50%); width:3px; background:#4a4a4a; top:-8px; bottom:-8px; }
+  .row:first-of-type .line { top:50%; }
+  .row:last-of-type .line { bottom:50%; }
+  .info { padding-left:13px; display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+  .badge { background:#d0021b; color:#fff; font-weight:800; font-size:13.5px; border-radius:7px; padding:3px 9px; min-width:38px; text-align:center; }
+  .badge.express { background:#2e7d32; }
+  .badge.night { background:#3b3ba0; }
+  .dest { color:#eaeaea; font-size:16px; font-weight:500; }
+  .stopname { color:#8e8e93; font-size:12px; width:100%; padding-left:2px; }
+  .empty { color:#8e8e93; padding:20px 0 30px; font-size:15px; }
+  /* ── Bottom route strip (picture 1) ─────────────────────── */
+  .strip {
+    background:#1e1e20; color:#f2f2f2; display:flex; align-items:center; gap:14px;
+    padding:12px 26px; font-size:15px; border-top:1px solid #333;
+  }
+  .strip .badge { font-size:14px; }
+  .strip .asof {
+    margin-left:auto; border:1.5px solid #9a9a9e; color:#cfcfd2; border-radius:999px;
+    padding:3px 14px; font-size:12px; font-weight:600; white-space:nowrap;
+  }
+  .err { background:#fff3f3; color:#b00020; padding:14px 26px; font-size:13.5px; display:none; }
+  @media (max-width:720px){
+    .hdr { grid-template-columns:1fr; }
+    .feat + .feat { border-left:none; padding-left:0; border-top:1.5px solid #f3bfc3; padding-top:14px; margin-top:14px; }
+    .feat h1 { white-space:normal; }
+  }
+</style>
+</head>
+<body>
+<div class="board">
+  <div class="topbar">
+    <div class="tab">
+      <svg viewBox="0 0 24 24"><path d="M4 16c0 .88.39 1.67 1 2.22V20a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h8v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM18 11H6V6h12v5z"/></svg>
+      NEXT BUS
+    </div>
+    <div class="meta">
+      <span>STOPS 6603 · 16193 · 15068 · 4141</span>
+      <span><span class="clockIcon">🕗</span><span id="topClock"></span></span>
+    </div>
+  </div>
+
+  <!-- Pink banner: next two buses side by side -->
+  <div class="hdr" id="hdr">
+    <div class="feat" id="feat0">
+      <div style="min-width:0">
+        <span class="label">ARRIVING FIRST</span><span class="pill">—</span>
+        <div class="titleline"><div class="bigdot"></div><h1>Loading…</h1></div>
+        <div class="sub"></div>
+      </div>
+      <div class="redbox"><div class="n">–</div><div class="u">MIN</div></div>
+    </div>
+    <div class="feat" id="feat1">
+      <div style="min-width:0">
+        <span class="label">NEXT</span><span class="pill">—</span>
+        <div class="titleline"><div class="bigdot"></div><h1>Loading…</h1></div>
+        <div class="sub"></div>
+      </div>
+      <div class="redbox"><div class="n">–</div><div class="u">MIN</div></div>
+    </div>
+  </div>
+
+  <div class="err" id="err"></div>
+
+  <!-- Black area: single column, remaining buses -->
+  <div class="list">
+    <h2>MORE BUSES — PARLIAMENT ST CORRIDOR (ALL 4 STOPS, SOONEST FIRST)</h2>
+    <div id="rows"><div class="empty">Loading predictions…</div></div>
+  </div>
+
+  <div class="strip">
+    <span class="badge" id="stripBadge">—</span>
+    <span id="stripText">Loading route…</span>
+    <span class="asof" id="asof">…</span>
+  </div>
+</div>
+
+<script>
+const STOPS = ["6603","16193","15068","4141"];
+// minimum walk time per stop (minutes) — arrivals sooner than this are unreachable, hide them
+const MIN_WALK = { "4141": 5, "default": 2 };
+const minWalkOf = id => MIN_WALK[id] != null ? MIN_WALK[id] : MIN_WALK["default"];
+const FEED = id => "https://retro.umoiq.com/service/publicJSONFeed?command=predictions&a=ttc&stopId=" + id;
+const MAX_LIST_ROWS = 10;      // rows in the black list (after the 2 featured)
+const REFRESH_MS = 30000;      // silent AJAX re-fetch
+const TICK_MS = 10000;         // countdown re-render between fetches
+
+let lastData = [];             // cache of latest predictions for tick re-renders
+
+function fmtClock(n){
+  let h = n.getHours(), m = String(n.getMinutes()).padStart(2,"0");
+  const ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12;
+  return { h, m, ap };
+}
+function tickClock(){
+  const n = new Date(), c = fmtClock(n);
+  document.getElementById("topClock").textContent = String(c.h).padStart(2,"0") + ":" + c.m + " " + c.ap;
+}
+tickClock(); setInterval(tickClock, 10000);
+
+// Transfer connections by route (TTC line colours: L1 yellow, L2 green; GO dark green)
+// arrows: north ↑, west ←, east →
+const L2 = { chip:{t:"2",bg:"#00923f",fg:"#fff"}, text:"&#8592; Kipling &nbsp;/&nbsp; Kennedy &#8594;" };
+const L1 = { chip:{t:"1",bg:"#f8c300",fg:"#1a1a1a"}, text:"&#8593; Finch &nbsp;/&nbsp; &#8593; VMC" };
+const GO = { chip:{t:"GO",bg:"#387c2b",fg:"#fff"}, text:"GO Transit" };
+const TRANSFERS = {
+  "65":  { at:"Castle Frank", conns:[L2] },
+  "365": { at:"Castle Frank", conns:[L2] },
+  "121": { at:"Union", conns:[L1, GO] },
+  "202": { at:"Union", conns:[L1, GO] }
+};
+function transferHtml(route, dirTitle){
+  const x = TRANSFERS[route];
+  if(!x) return "";
+  // only show when this trip is actually heading toward the transfer point
+  if(dirTitle && !dirTitle.toLowerCase().includes(x.at.split(" ")[0].toLowerCase())) return "";
+  return '<span class="xfer"><span class="xlabel">CONNECT TO</span>' +
+    x.conns.map(c =>
+      '<span class="xchip" style="background:' + c.chip.bg + ';color:' + c.chip.fg + '">' + c.chip.t + '</span>' +
+      '<span>' + c.text + '</span>'
+    ).join('<span style="opacity:.5">·</span>') +
+    '</span>';
+}
+
+const arr = x => x == null ? [] : (Array.isArray(x) ? x : [x]);
+function destOf(t){ const m = t.match(/towards\s+(.*)$/i); return m ? m[1] : t; }
+function dirOf(t){ const m = t.match(/^(\w+)\s*-/); return m ? m[1] : ""; }
+function routeNameOf(rt){ const i = rt.indexOf("-"); return i >= 0 ? rt.slice(i+1) : rt; }
+function badgeClass(b){ return /^9\d\d/.test(b) ? " express" : (/^3\d\d/.test(b) ? " night" : ""); }
+function chipLabel(b){ return /^3\d\d/.test(b) ? b + "☾" : b; }
+function minsFromNow(e){ return Math.max(0, Math.round((e - Date.now()) / 60000)); }
+
+async function fetchStop(id){
+  const res = await fetch(FEED(id));
+  if(!res.ok) throw new Error("HTTP " + res.status + " for stop " + id);
+  const data = await res.json();
+  const out = [];
+  arr(data.predictions).forEach(p => {
+    const route = p.routeTag || "";
+    const routeTitle = p.routeTitle || route;
+    const stopTitle = p.stopTitle || ("Stop " + id);
+    arr(p.direction).forEach(d => {
+      const dir = d.title || routeTitle;
+      arr(d.prediction).forEach(pr => {
+        out.push({ route, routeTitle, stopTitle, stopId: id, dir,
+          epoch: Number(pr.epochTime), branch: pr.branch || route, vehicle: pr.vehicle || "" });
+      });
+    });
+  });
+  return out;
+}
+
+function fillFeat(el, p, label){
+  if(!p){
+    el.innerHTML = '<div style="min-width:0"><span class="label">' + label + '</span>' +
+      '<div class="titleline"><div class="bigdot"></div><h1>No bus predicted</h1></div><div class="sub"></div></div>' +
+      '<div class="redbox"><div class="n">–</div><div class="u">MIN</div></div>';
+    return;
+  }
+  const m = minsFromNow(p.epoch);
+  el.innerHTML =
+    '<div style="min-width:0">' +
+      '<span class="label">' + label + '</span>' +
+      '<div class="titleline"><div class="bigdot"></div>' +
+        '<span class="bigbadge' + badgeClass(p.branch) + '">' + chipLabel(p.branch) + '</span>' +
+        '<h1>' + destOf(p.dir) + '</h1></div>' +
+      '<div class="sub"><span class="chip access">&#9855;</span>' +
+        '<span>' + p.stopTitle + ' (stop ' + p.stopId + ') · ' + dirOf(p.dir).toLowerCase() + 'bound · bus ' + p.vehicle + '</span></div>' +
+      transferHtml(p.route, p.dir) +
+    '</div>' +
+    '<div class="redbox"><div class="n">' + (m <= 0 ? "NOW" : m) + '</div><div class="u">MIN</div></div>';
+}
+
+function render(){
+  // drop arrivals you can't walk to in time (re-evaluated on every tick, so entries
+  // disappear automatically as they fall under the walk threshold)
+  const all = lastData
+    .filter(p => minsFromNow(p.epoch) >= minWalkOf(p.stopId))
+    .sort((a,b) => a.epoch - b.epoch);
+  const rowsEl = document.getElementById("rows");
+
+  fillFeat(document.getElementById("feat0"), all[0], "ARRIVING FIRST");
+  fillFeat(document.getElementById("feat1"), all[1], "NEXT");
+
+  const rest = all.slice(2, 2 + MAX_LIST_ROWS);
+  if(!all.length){
+    rowsEl.innerHTML = '<div class="empty">No predictions right now at any of the three stops.</div>';
+    document.getElementById("stripBadge").textContent = "—";
+    document.getElementById("stripText").textContent = "No service predicted";
+    return;
+  }
+  if(!rest.length){
+    rowsEl.innerHTML = '<div class="empty">No further buses predicted.</div>';
+  } else {
+    rowsEl.innerHTML = rest.map(p => {
+      const m = minsFromNow(p.epoch);
+      return '<div class="row">' +
+        '<div class="min' + (m<=1 ? ' now' : '') + '">' + (m<=0 ? "Now" : m + " Min") + '</div>' +
+        '<div class="dotcol"><div class="line"></div><div class="dot"></div></div>' +
+        '<div class="info">' +
+          '<span class="badge' + badgeClass(p.branch) + '">' + chipLabel(p.branch) + '</span>' +
+          '<span class="dest">To ' + destOf(p.dir) + ' · ' + dirOf(p.dir) + '</span>' +
+          '<span class="stopname">' + p.stopTitle + ' (stop ' + p.stopId + ') · bus ' + p.vehicle + '</span>' +
+          transferHtml(p.route, p.dir) +
+        '</div></div>';
+    }).join("");
+  }
+  const first = all[0];
+  document.getElementById("stripBadge").textContent = first.branch;
+  document.getElementById("stripBadge").className = "badge" + badgeClass(first.branch);
+  document.getElementById("stripText").textContent = routeNameOf(first.routeTitle) + " to " + destOf(first.dir);
+}
+
+async function load(){
+  const errEl = document.getElementById("err");
+  try{
+    const results = await Promise.allSettled(STOPS.map(fetchStop));
+    const ok = results.filter(r => r.status === "fulfilled").flatMap(r => r.value);
+    const failed = results.filter(r => r.status === "rejected");
+    if(failed.length === STOPS.length){
+      throw new Error(failed[0].reason && failed[0].reason.message || "all feeds failed");
+    }
+    lastData = ok;             // swap in new data, re-render in place (no page refresh)
+    errEl.style.display = failed.length ? "block" : "none";
+    if(failed.length) errEl.textContent = failed.length + " of " + STOPS.length + " stop feeds failed — showing the rest.";
+    render();
+    document.getElementById("asof").textContent =
+      "Updated " + new Date().toLocaleTimeString("en-CA",{hour:"numeric",minute:"2-digit",second:"2-digit"});
+  }catch(e){
+    errEl.style.display = "block";
+    errEl.textContent = "Could not load predictions (" + e.message + "). Keeping last known times; retrying in 30s.";
+    if(lastData.length) render(); // keep showing cached times, countdowns still tick down
+  }
+}
+load();
+setInterval(load, REFRESH_MS);                       // AJAX refresh, no page reload
+setInterval(() => { if(lastData.length) render(); }, TICK_MS);  // countdown ticks between fetches
+</script>
+</body>
+</html>
